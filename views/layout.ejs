@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<base href="/">
+	<title><%=typeof title == 'undefined' ? 'New Sails App' : title%></title>
+
+	<!-- Viewport mobile tag for sensible mobile support -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!--STYLES-->
+	<link rel="stylesheet" href="/styles/_bootstrap.css">
+	<link rel="stylesheet" href="/styles/bootstrap-theme.css">
+	<link rel="stylesheet" href="/styles/datepicker.css">
+	<link rel="stylesheet" href="/styles/font-awesome.css">
+	<link rel="stylesheet" href="/styles/general.css">
+	<link rel="stylesheet" href="/styles/importer.css">
+	<!--STYLES END-->
+	
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div class="container" ng-app="app">
+		<ui-view></ui-view>
+		<div ng-show="$loading" style="overflow:hidden;width:100%;height:100%;z-index:10000;position:fixed;top:0;left:0;">
+			<div style="overflow:hidden;width:100%;height:100%;z-index:9000;position:fixed;top:0;left:0;background-color:black;opacity:0.1;"></div>
+			<div style="z-index:1100;text-align:center;font-size:75px;color:#737272;top:50px;margin-top: 120px;">
+				<h1>Loading...</h1>
+				<i class="fa fa-spinner fa-pulse"></i>
+			</div>
+		</div><!--/loading-->
+	</div><!--/container-->
+
+	<!--TEMPLATES-->
+	<script type="text/javascript" src="/jst.js"></script>
+	<!--TEMPLATES END-->
+
+	<!--SCRIPTS-->
+	<script src="/js/dependencies/sails.io.js"></script>
+	<script src="/js/dependencies/___polyfill.js"></script>
+	<script src="/js/dependencies/__jquery.min.js"></script>
+	<script src="/js/dependencies/_angular.min.js"></script>
+	<script src="/js/dependencies/angular-sanitize.min.js"></script>
+	<script src="/js/dependencies/angular-ui-router.min.js"></script>
+	<script src="/js/dependencies/datepicker.js"></script>
+	<script src="/js/dependencies/getDataForm.js"></script>
+	<script src="/js/dependencies/lodash.min.js"></script>
+	<script src="/js/dependencies/validator.js"></script>
+	<script src="/js/app.js"></script>
+	<script src="/js/controller/_TemplateController.js"></script>
+	<script src="/js/directive/_templateDirective.js"></script>
+	<script src="/js/directive/footerDirective.js"></script>
+	<script src="/js/directive/formGroupDirective.js"></script>
+	<script src="/js/directive/gerente/_config.js"></script>
+	<script src="/js/directive/gerente/_siteGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/canalGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/chatGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/contratanteGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/datosGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/homeGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/planGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/sistemaGerenteDirective.js"></script>
+	<script src="/js/directive/gerente/usuarioSuscriptorGerenteDirective.js"></script>
+	<script src="/js/directive/headerDirective.js"></script>
+	<script src="/js/directive/login/_config.js"></script>
+	<script src="/js/directive/login/loginDirective.js"></script>
+	<script src="/js/directive/login/logupDirective.js"></script>
+	<script src="/js/directive/menuDirective.js"></script>
+	<script src="/js/directive/navDirective.js"></script>
+	<script src="/js/factory/_TemplateFactory.js"></script>
+	<script src="/js/factory/validatorFactory.js"></script>
+	<script src="/js/filter/appFilter.js"></script>
+	<script src="/js/service/collapseNavBarService.js"></script>
+	<script src="/js/service/siteAuthorizedService.js"></script>
+	<!--SCRIPTS END-->
+</body>
+</html>
