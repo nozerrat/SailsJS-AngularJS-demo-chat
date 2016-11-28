@@ -1,12 +1,12 @@
 /**
- * User.js
+ * Canal.js
  *
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
 module.exports = {
-	tableName: 'sos_sistema',
+	tableName: 'sos_canal',
 	meta: { schemaName: schemaService.schema },
 
 	types: {
@@ -17,46 +17,36 @@ module.exports = {
 
 	attributes: {
 		_id: {
-			columnName: 'sis_id',
+			columnName: 'can_id',
 			type: 'integer',
 			size: 4,
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		nombre: {
-			columnName: 'sis_nombre',
-			type: 'string',
+		sistema: {
+			model: 'sistema',// nombre del modelo a referenciar
+			columnName: 'sos_sistema_sis_id',
 			required: true,
 		},
-		version: {
-			columnName: 'sis_version',
+		nombre: {
+			columnName: 'can_nombre',
 			type: 'string',
 			required: true,
 		},
 		descripcion: {
-			columnName: 'sis_descripcion',
+			columnName: 'can_descripcion',
 			type: 'text',
 			// required: true,
 		},
-		fecha: {
-			columnName: 'sis_fecha',
-			type: 'date',
-			required: true,
-		},
 		estatus: {
-			columnName: 'sis_estatus',
+			columnName: 'can_estatus',
 			type: 'boolean',
 			required: true,
 		},
-
-		// Populate
-		canal: {
-			collection: 'canal',// nombre del modelo
-			via: 'sistema',// nombre del atributo
-		},
-		plan: {
-			collection: 'plan',// nombre del modelo
-			via: 'sistema',// nombre del atributo
+		fecha: {
+			columnName: 'can_fecha',
+			type: 'date',
+			required: true,
 		},
 	}
 };

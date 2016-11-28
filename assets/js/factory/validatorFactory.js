@@ -1,8 +1,8 @@
 (function( win,factory ){ factory( win ); }( this, function( win ) {
 win.angular.module( 'app' )
 .factory('validatorFactory', [
-				'$state', 
-	function( $state ) {
+				'$state','$timeout', 
+	function( $state , $timeout ) {
 		var self = this;
 
 		/**
@@ -15,9 +15,11 @@ win.angular.module( 'app' )
 			return validatorFactory;
 		**/
 		self.register = function( nameForm ) {
-			win.Validator.cleanAll();//.removeAll();
-			win.Validator.removeAll();
-			win.Validator.register( nameForm );
+			$timeout(function() {
+				win.Validator.cleanAll();//.removeAll();
+				win.Validator.removeAll();
+				win.Validator.register( nameForm );
+			},500);
 			return self;
 		};
 
@@ -35,6 +37,22 @@ win.angular.module( 'app' )
 		self.runSuccess = function( ) {
 			return win.Validator.run().success;
 		};
+
+
+		/**
+			Type: Function
+			Resetea los valores de un formulario
+			e.g:
+			validator.resetForm();
+			or
+			validatorFactory.resetForm();
+
+			return Object;
+		**/
+		self.resetForm = function( ) {
+			win.Validator.resetForm();
+			return self;
+		};		
 
 		/**
 			Type: Function
@@ -61,29 +79,29 @@ win.angular.module( 'app' )
 			or
 			validatorFactory.cleanAll();
 
-			return Boolean;
+			return Object;
 		**/
 		self.cleanAll = function( ) {
 			win.Validator.cleanAll();
+			return self;
 		};
 
 		/**
 			Type: Function
 			Scope: Public
-			Emite a la vista los errores registrado
+			Emite a la vista los errores registrado.
+
 			e.g:
-			validator.handlerError();
-			or
-			validatorFactory.handlerError();
+			validatorFactory.handlerError( response );
 
 			return Boolean;
 		**/
-		self.handlerError = function( jwres ) {
-			if ( jwres.statusCode >=400 && jwres.statusCode <=500) {
-				self.__addError( jwres );
+		self.handlerError = function( response ) {
+			if ( response.statusCode >=400 && response.statusCode <=500) {
+				self.__addError( response );
 				return true;
 			}
-			if ( jwres.statusCode!==200 || jwres.statusCode!==201 ) 
+			if ( response.statusCode!==200 || response.statusCode!==201 ) 
 				return false;
 		};
 
@@ -94,16 +112,24 @@ win.angular.module( 'app' )
 
 			return Void;
 		**/
-		self.__addError = function( jwres ) {
-			var invalidAttributes = jwres.body.invalidAttributes;
-			var originalError     = jwres.body.originalError;
-			if ( invalidAttributes )
-				win.Validator.add_error( invalidAttributes, null, true );
-			else if ( originalError ) {
-				var code = originalError.code;
-				if ( code==='23505' ) // código lanzado por Postgres que indica que una Primary Key esta repetida
-					win.Validator.add_error( { 'username': { rule: 'username'+code } }, null, true );
-			}
+		self.__addError = function( response ) {
+
+			if ( typeof response==='object' && response.hasOwnProperty('error') && _.isArray( response.error ) && response.error.length )
+				for (index in response.error) {
+					win.Validator.add_error( response.error[index], null, true );
+				}
+
+			// var invalidAttributes = response.body.invalidAttributes;
+			// var originalError     = response.body.originalError;
+
+			// if ( invalidAttributes )
+			// 	win.Validator.add_error( invalidAttributes, null, true );
+			// else if ( originalError ) {
+			// 	var code = originalError.code;
+			// 	if ( code==='23505' ) // código lanzado por Postgres que indica que una Primary Key esta repetida
+			// 		win.Validator.add_error( { 'username': { rule: 'username'+code } }, null, true );
+			// }
+			
 		};
 
 		/**
@@ -172,8 +198,13 @@ win.angular.module( 'app' )
 			invalid_authorize: { // Indica si el email o passworod es incorrecto
 				message: 'El valor <b>Email</b> o <b>Password</b> son invalidos',
 			},
+			unique: { // Indica si el email o passworod es incorrecto
+				// message: 'A record with that `username` already exists (`garlos@gmail.com`).',
+				message: 'El valor <b>:value</b> ya esta registrado.',
+			},
 		}]);
 
+		self.register.resetForm    = self.resetForm;
 		self.register.runSuccess   = self.runSuccess;
 		self.register.runError     = self.runError;
 		self.register.cleanAll     = self.cleanAll;

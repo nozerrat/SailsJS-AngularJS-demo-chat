@@ -1,15 +1,23 @@
 (function( win,factory ){ factory( win ); }( this, function( win ) {
 win.angular.module( 'app' )
 .service('siteAuthorizedService', [
-			'$rootScope','$state','$timeout','$location','validatorFactory', 
-function( $rootScope , $state , $timeout , $location , validatorFactory ) {
+			'$rootScope','$state','$timeout','$location','validatorFactory','resourceService', 
+function( $rootScope , $state , $timeout , $location , validatorFactory , resourceService ) {
 	var socket = win.io.socket;
 	var self   = this;
+
+	var rsc = resourceService;
 
 	self.$authorized = false;
 	$rootScope.$authorized = false;
 	self.$loading = true;
 	$rootScope.$loading = true;
+
+	// self.logout = function() {
+	// 	$scope.rsc.query('/login/logout', function( data ) {
+	// 		// body...
+	// 	})
+	// };
 
 	self.logout = function() {
 		self.$loading = true;
@@ -17,7 +25,7 @@ function( $rootScope , $state , $timeout , $location , validatorFactory ) {
 		socket.post('/login/logout', function ( resdata, jwres ) {
 			switch( jwres.statusCode ) {
 				case 400: case 403: case 404: case 500: 
-				validatorFactory.addError( resdata );
+				validatorFactory.handlerError( resdata );
 			}
 			if ( jwres.statusCode!==200 ) return;
 
@@ -34,18 +42,23 @@ function( $rootScope , $state , $timeout , $location , validatorFactory ) {
 	};
 
 	self.authorized = function() {
-		if ( $location.path()==='/logup' ) return;
 		self.$loading = true;
 		$rootScope.$loading = true;
+		
+		if ( $location.path()==='/logup' ) {
+			self.$loading = false;
+			$rootScope.$loading = false;
+			return;
+		}
 
-		socket.post('/login/authorized', function ( authorized, jwres ) {
-			switch( jwres.statusCode ) {
+		socket.post('/login/authorized', function( authorized, jwres ) {
+			switch( authorized.statusCode ) {
 				case 400: case 403: case 404: case 500: 
-				validatorFactory.addError( authorized );
+				validatorFactory.handlerError( authorized );
 			}
-			if ( jwres.statusCode!==200 ) return;
+			if ( authorized.statusCode!==200 ) return;
 
-			if ( authorized.authorized===true ) {
+			if ( authorized.data.authorized===true ) {
 				self.$authorized = true;
 				$rootScope.$authorized = true;
 				if ( $location.path().match( /\/site\/(.*)/ ) ) {

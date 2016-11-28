@@ -1,9 +1,9 @@
 (function( win,factory ){ factory( win ); }( this, function( win ) {
 win.angular.module( 'app' )
-.factory('_templateFactory', [
+.service('_templateService', [
 function( ) {
-	return function( ) {
-		// body...
-	};
+	var self = this;
+
 }])}));
+
 

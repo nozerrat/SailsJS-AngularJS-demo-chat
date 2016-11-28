@@ -8,6 +8,7 @@
 			fields: {/* 
 				Se registran los elementos a validar. Ej:
 				[name-field] => {
+					forms: Object,
 					rules: String,
 					element: Object,
 					helpBlock: Object,
@@ -167,6 +168,7 @@
 
 						// Se registran los elementos para su validación
 						this.fields[ field ]  = {
+							forms: forms,
 							rules: (element.getAttribute( 'aria-rules' ) || '').split( '|' ),
 							element: element,
 							formGroup: formGroup,
@@ -929,6 +931,13 @@
 					this.fields[field].helpBlock.style.display = 'none';
 					this.error = false;
 					this.success = true;
+				}
+				return this;
+			},// End clean
+
+			resetForm: function() {
+				for ( var field in this.fields) {
+					this.fields[field].forms.reset();
 				}
 				return this;
 			},// End clean

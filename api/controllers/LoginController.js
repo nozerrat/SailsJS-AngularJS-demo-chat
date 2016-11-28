@@ -23,46 +23,74 @@ var subscribeToFunRoom = function( req  ) {
 module.exports = {
 
 	index: function( req, res ) {
-		return res.ok( req.session.auth, 'layout' );
+		return res.ok( responseService.get( req.session.auth ), 'layout' );
 	},
 
 	authorize: function( req, res ) {
 		if ( !req.isSocket ) return res.badRequest( );
-		User.findOne( )
-		.where({ username: req.body.username })
-		.exec(function(err, user) {
-			if ( err ) return res.notFound( err );
-			if ( !user ) return res.notFound( validatorService.get( {field:'username',rule:'user_exists'} ) );
 
+		// User.findOne( )
+		// .where({ username: req.body.username })
+		// .exec(function(err, user) {
+		// 	if ( err ) return res.ok( responseService.get( null, err.invalidAttributes, 404 ) );
+		// 	if ( !user ) return res.ok( responseService.get( null, {username: { rule:'user_exists' }}, 400 ) );
+
+		// 	bcryptService.bcrypt.compare( req.body.password, user.password, function( err, equal ) {
+		// 		if ( err ) return res.serverError( err );
+		// 		if( equal ) {
+		// 			user.authorized = true;
+		// 			req.session.auth = user;
+
+		// 			subscribeToFunRoom( req );
+
+		// 			responseService.setData( equal );
+
+		// 		}
+		// 		else {
+		// 			req.session.auth = { authorized: undefined };
+		// 			responseService.pushError( [{field:'username',rule:'invalid_authorize'},{field:'password',rule:'invalid_authorize'}] );
+		// 		}
+
+		// 		return res.ok( responseService.get( ) );
+		// 	});
+		// });
+
+		CRUDService.findOne( req, res, User, { username: req.body.username }, function( user ) {
+			if ( !user ) return res.ok( responseService.get( null, {username: { rule:'user_exists' }}, 400 ) );
 			bcryptService.bcrypt.compare( req.body.password, user.password, function( err, equal ) {
 				if ( err ) return res.serverError( err );
 				if( equal ) {
 					user.authorized = true;
 					req.session.auth = user;
+					req.session.auth.authorized = true;
 
 					subscribeToFunRoom( req );
 
-					return res.ok( equal );
+					responseService.setData( equal );
+
 				}
 				else {
 					req.session.auth = { authorized: undefined };
-					return res.notFound( validatorService.get( [{field:'username',rule:'invalid_authorize'},{field:'password',rule:'invalid_authorize'}] ) );
+					responseService.pushError( [{field:'username',rule:'invalid_authorize'},{field:'password',rule:'invalid_authorize'}] );
 				}
+
+				return res.ok( responseService.get( ) );
 			});
-		});
+		} );
+
 	},
 
 	authorized: function( req,res ) {
-		if ( !req.isSocket ) return res.badRequest();
+		if ( !req.isSocket ) return res.badRequest( );
 		try {
 			req.session.auth.authorized;
-		}catch(err){
-			req.session.auth = {};
+		} catch(err) {
+			req.session.auth = { };
 		}
 
 		subscribeToFunRoom( req );
 
-		return res.ok( req.session.auth );
+		return res.ok( responseService.get( req.session.auth ) );
 	},
 
 	logout: function( req, res ) {

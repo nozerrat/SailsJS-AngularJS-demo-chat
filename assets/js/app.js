@@ -1,5 +1,5 @@
 (function( win, factory ){ factory( win ); }( this, function( win ) {
-win.angular.module( 'app', ['ui.router','ngSanitize'])
+win.angular.module( 'app', ['ui.router','ngSanitize','ngTable'])
 .run([      '$rootScope','$state','$stateParams','siteAuthorizedService',
 	function( $rootScope , $state , $stateParams , siteAuthorizedService ) {
 		// Es muy práctico para añadir referencias al $state y $stateParams a los $rootScope es

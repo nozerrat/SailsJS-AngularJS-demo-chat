@@ -7,7 +7,7 @@
 
 module.exports = {
 	tableName: 'user',
-	meta: { schemaName: 'sails' },
+	meta: { schemaName: schemaService.schema },
 
 	// identity: 'User',
 	// connection: 'myAwesomeConnection',
@@ -26,7 +26,7 @@ module.exports = {
 	},
 
 	attributes: {
-		id: {
+		_id: {
 			columnName: '_id',
 			type: 'integer',
 			size: 4,
@@ -53,7 +53,7 @@ module.exports = {
 		},
 		discriminant: {
 			columnName: 'discriminant',
-			type: 'string',
+			type: 'text',
 			size: 10,
 			required: true,
 			enum: ['admin','doc','paciente'],

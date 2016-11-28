@@ -7,7 +7,7 @@
 
 module.exports = {
 	tableName: 'admin',
-	meta: { schemaName: 'sails' },
+	meta: { schemaName: schemaService.schema },
 
 	// identity: 'Admin',
 	// connection: 'myAwesomeConnection',
@@ -17,7 +17,7 @@ module.exports = {
 	// autoUpdatedAt: false,
 
 	attributes: {
-		id: {
+		_id: {
 			columnName: '_id',
 			type: 'integer',
 			size: 4,
